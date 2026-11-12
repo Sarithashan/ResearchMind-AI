@@ -5,3 +5,5 @@ matplotlib
 plotly
 pymupdf
 nltk
+datasets
+ipykernel

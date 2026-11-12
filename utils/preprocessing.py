@@ -3,12 +3,16 @@ import re
 
 _CITATION = re.compile(r"@xcite")
 _MATH = re.compile(r"@xmath\d+")
+_NUM_CITE = re.compile(r"\[\s*\d+(?:\s*[,\-–]\s*\d+)*\s*\]")               # [13]  [35, 2, 5]  [4-7]
+_AUTHOR_CITE = re.compile(r"\([^()]*\bet al\.?,?\s*\d{4}[a-z]?[^()]*\)")   # (Vaswani et al., 2017)
 
 
 def clean_text(text: str) -> str:
     """Normalize text so dataset text and PDF text look identical to the model."""
     text = text.lower()
-    text = _CITATION.sub(" ", text)          # drop citation placeholders
+    text = _CITATION.sub(" ", text)          # dataset citation placeholders
+    text = _NUM_CITE.sub(" ", text)          # numeric citations from PDFs
+    text = _AUTHOR_CITE.sub(" ", text)       # author-year citations from PDFs
     text = _MATH.sub(" xmath ", text)        # keep one token marking "a math symbol was here"
     text = text.replace("_", " ")            # drop italics markers
     text = re.sub(r"([,;:()?!])", r" \1 ", text)        # space around punctuation

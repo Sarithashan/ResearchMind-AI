@@ -1,4 +1,11 @@
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
 import streamlit as st
+
+from utils.pdf_extractor import prepare_for_model
 
 st.set_page_config(page_title="ResearchMind AI", page_icon="📚", layout="wide")
 
@@ -54,7 +61,6 @@ st.sidebar.caption("Deep Learning + NLP project")
 
 # ---------- Pages ----------
 COMING_SOON = {
-    "Upload Paper": ("Upload a research paper PDF and preview the extracted text.", "Phase 3"),
     "Generate Summary": ("Generate an abstractive summary with the custom Seq2Seq model.", "Phase 10"),
     "Research Insights": ("Objectives, methodology, findings and conclusions.", "Phase 9"),
     "Model Comparison": ("Compare RNN, LSTM, GRU and the attention model.", "Phase 8"),
@@ -96,6 +102,41 @@ if page == "Home":
         "2. Go to **Generate Summary** to create a summary.\n"
         "3. Explore **Research Insights**, **Model Comparison** and **Attention Visualization**."
     )
+
+elif page == "Upload Paper":
+    st.title("Upload Paper")
+    uploaded = st.file_uploader("Upload a research paper (PDF)", type=["pdf"])
+
+    if uploaded is not None:
+        with st.spinner("Extracting text..."):
+            result = prepare_for_model(uploaded.getvalue())
+
+        if len(result["raw_text"].strip()) < 200:
+            st.error(
+                "Very little text was found. This PDF may be a scanned image, "
+                "which is not supported yet."
+            )
+            st.stop()
+
+        st.session_state["paper"] = result
+        st.session_state["paper_name"] = uploaded.name
+        st.success(f"Uploaded: {uploaded.name}")
+
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Characters extracted", f"{len(result['raw_text']):,}")
+        c2.metric("Sections detected", len(result["sections_found"]))
+        c3.metric("Model input words", len(result["input_text"].split()))
+
+        if result["used_fallback"]:
+            st.warning("Section headings were not detected, so the whole text was used.")
+        else:
+            st.markdown("**Sections found:** " + ", ".join(result["sections_found"]))
+
+        with st.expander("Preview of extracted text"):
+            st.text(result["raw_text"][:3000])
+        with st.expander("Cleaned text that will be given to the model"):
+            st.text(result["input_text"])
+
 else:
     desc, phase = COMING_SOON[page]
     st.title(page)

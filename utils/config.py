@@ -13,3 +13,9 @@ MAX_ABSTRACT_WORDS = 400
 RANDOM_SEED = 42
 TRAIN_FRAC = 0.8
 VAL_FRAC = 0.1   # the remaining 10% is the test set
+
+# Tokenizer / sequence lengths
+MAX_VOCAB = 10000          # keep the 10,000 most frequent words (incl. special tokens)
+MIN_FREQ = 2               # ignore words seen fewer than 2 times in training data
+ARTICLE_LEN = MAX_ARTICLE_WORDS          # encoder input length
+SUMMARY_LEN = MAX_SUMMARY_WORDS + 2      # decoder length: words + <sos> + <eos>

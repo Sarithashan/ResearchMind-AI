@@ -18,4 +18,12 @@ VAL_FRAC = 0.1   # the remaining 10% is the test set
 MAX_VOCAB = 10000          # keep the 10,000 most frequent words (incl. special tokens)
 MIN_FREQ = 2               # ignore words seen fewer than 2 times in training data
 ARTICLE_LEN = MAX_ARTICLE_WORDS          # encoder input length
-SUMMARY_LEN = MAX_SUMMARY_WORDS + 2      # decoder length: words + <sos> + <eos>
+SUMMARY_LEN = MAX_SUMMARY_WORDS + 2     
+
+# Training settings (identical for ALL models, for a fair comparison)
+EMBED_DIM = 128
+HIDDEN_DIM = 256
+BATCH_SIZE = 32
+EPOCHS = 30
+LEARNING_RATE = 1e-3
+PATIENCE = 3              # early stopping: stop after 3 epochs without improvement# decoder length: words + <sos> + <eos>

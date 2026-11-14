@@ -5,5 +5,8 @@ matplotlib
 plotly
 pymupdf
 nltk
+tensorflow
+pyarrow
 datasets
+rouge-score
 ipykernel

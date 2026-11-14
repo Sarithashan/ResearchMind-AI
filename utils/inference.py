@@ -4,6 +4,7 @@ import tensorflow as tf
 
 class FastModel:
     def __init__(self, model):
+        self.model = model
         self._f = tf.function(lambda e, d: model([e, d], training=False))
 
     def __call__(self, inputs, training=False):

@@ -7,3 +7,4 @@ dataset/processed/
 *.h5
 *.keras
 .env
+!models/saved/attention_infer.weights.h5
